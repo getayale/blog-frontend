@@ -1,0 +1,282 @@
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #1e293b;
+}
+
+.reader-dashboard {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation bar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 7%;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.navbar-brand a {
+  color: #2563eb;
+  font-size: 24px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  > a {
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #2563eb;
+    }
+  }
+}
+
+.logout-btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #b91c1c;
+  }
+}
+
+/* Dashboard header */
+.dashboard-header {
+  padding: 55px 20px;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb, #3b82f6);
+  color: #ffffff;
+  text-align: center;
+
+  h1 {
+    margin: 0 0 12px;
+    font-size: 36px;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #dbeafe;
+    font-size: 16px;
+  }
+}
+
+/* Posts section */
+.posts-section {
+  width: 86%;
+  max-width: 1200px;
+  margin: 45px auto;
+  flex: 1;
+
+  h2 {
+    margin-bottom: 24px;
+    color: #0f172a;
+    font-size: 25px;
+    font-weight: 700;
+  }
+}
+
+/* Search */
+.search-section {
+  display: flex;
+  gap: 10px;
+  max-width: 600px;
+  margin-bottom: 30px;
+
+  input {
+    flex: 1;
+    min-width: 0;
+    padding: 13px 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    background: #ffffff;
+    color: #1e293b;
+    font-size: 14px;
+
+    &:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    &::placeholder {
+      color: #94a3b8;
+    }
+  }
+
+  button {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #1d4ed8;
+    }
+  }
+}
+
+/* Posts grid */
+.posts-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.post-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  h3 {
+    margin: 0 0 14px;
+    color: #0f172a;
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  > p {
+    flex: 1;
+    margin: 0 0 20px;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  small {
+    color: #64748b;
+    font-size: 12px;
+  }
+}
+
+.post-meta {
+  margin-bottom: 18px;
+}
+
+.post-actions {
+  button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 7px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #1d4ed8;
+    }
+  }
+}
+
+/* Messages */
+.error-message {
+  color: #dc2626;
+  font-size: 14px;
+}
+
+/* Footer */
+.footer {
+  margin-top: auto;
+  padding: 22px;
+  background: #0f172a;
+  color: #cbd5e1;
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-size: 13px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .posts-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 16px 5%;
+  }
+
+  .navbar-brand a {
+    font-size: 20px;
+  }
+
+  .navbar-links {
+    gap: 14px;
+  }
+
+  .dashboard-header {
+    padding: 40px 18px;
+
+    h1 {
+      font-size: 28px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .posts-section {
+    width: 90%;
+    margin: 30px auto;
+  }
+
+  .posts-list {
+    grid-template-columns: 1fr;
+  }
+
+  .search-section {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+}

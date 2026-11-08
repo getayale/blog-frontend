@@ -1,0 +1,48 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <label for="email">Email</label>
+  <input
+    type="email"
+    name="email"
+    id="email"
+    formControlName="email"
+  >
+
+  @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('required')) {
+    <p>Email is required.</p>
+  }
+
+  @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('email')) {
+    <p>Please enter a valid email address.</p>
+  }
+
+  <label for="password">Password</label>
+  <input
+    type="password"
+    name="password"
+    id="password"
+    formControlName="password"
+  >
+
+  @if (loginForm.controls.password.touched && loginForm.controls.password.hasError('required')) {
+    <p>Password is required.</p>
+  }
+
+  <button type="submit" [disabled]="isLoading">
+    @if (isLoading) {
+      Logging in...
+    } @else {
+      Login
+    }
+  </button>
+
+  @if (message) {
+    <p>{{ message }}</p>
+  }
+
+  @if (errorMessage) {
+    <p>{{ errorMessage }}</p>
+  }
+
+  <p>Don't have an account?</p>
+  <a routerLink="/register" class="signup-button">Sign Up</a>
+</form>

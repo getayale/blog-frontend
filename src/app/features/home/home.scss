@@ -1,0 +1,327 @@
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #1e293b;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.home-container {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Navigation */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 8%;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.navbar-brand a {
+  color: #1d4ed8;
+  font-size: 25px;
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: -1px;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.navbar-links a {
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.navbar-links a:hover {
+  color: #2563eb;
+}
+
+.navbar-links .signup-button {
+  padding: 11px 22px;
+  color: #ffffff;
+  background: #2563eb;
+  border-radius: 8px;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.navbar-links .signup-button:hover {
+  color: #ffffff;
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 90px 20px 85px;
+  text-align: center;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+}
+
+.hero-section h1 {
+  max-width: 850px;
+  margin: 0 auto 20px;
+  color: #0f172a;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -2px;
+}
+
+.hero-section p {
+  max-width: 650px;
+  margin: 12px auto;
+  color: #475569;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+/* Posts Section */
+.posts-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 65px 25px 80px;
+}
+
+.posts-section h2 {
+  margin: 0 0 30px;
+  color: #0f172a;
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -0.8px;
+}
+
+/* Search */
+.search-section {
+  display: flex;
+  gap: 12px;
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+
+.search-section input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 18px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  outline: none;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-section input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.search-section button {
+  padding: 14px 25px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.search-section button:hover {
+  background: #1d4ed8;
+}
+
+/* Posts Grid */
+.posts-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 25px;
+}
+
+.post-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 270px;
+  padding: 26px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08);
+}
+
+.post-card h3 {
+  margin: 0 0 15px;
+  color: #0f172a;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.post-card > p {
+  margin: 0 0 25px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.8;
+  flex: 1;
+}
+
+/* Post Metadata */
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 15px 0;
+  border-top: 1px solid #f1f5f9;
+}
+
+.post-meta small {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* Read More */
+.post-card > a {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  margin-top: 5px;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.post-card > a:hover {
+  gap: 11px;
+  color: #1d4ed8;
+}
+
+/* Loading, Empty and Error Messages */
+.posts-section > p {
+  padding: 20px;
+  color: #64748b;
+  text-align: center;
+}
+
+.error-message {
+  padding: 14px 18px;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+}
+
+/* Footer */
+.footer {
+  padding: 25px 20px;
+  background: #0f172a;
+  text-align: center;
+}
+
+.footer p {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .posts-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-section {
+    padding: 70px 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 18px 5%;
+  }
+
+  .navbar-brand a {
+    font-size: 21px;
+  }
+
+  .navbar-links {
+    gap: 15px;
+  }
+
+  .navbar-links a {
+    font-size: 13px;
+  }
+
+  .navbar-links .signup-button {
+    padding: 9px 14px;
+  }
+
+  .hero-section {
+    padding: 65px 20px;
+  }
+
+  .hero-section h1 {
+    font-size: 36px;
+    letter-spacing: -1px;
+  }
+
+  .hero-section p {
+    font-size: 15px;
+  }
+
+  .posts-section {
+    padding: 45px 18px 60px;
+  }
+
+  .posts-section h2 {
+    font-size: 25px;
+  }
+
+  .search-section {
+    gap: 8px;
+  }
+
+  .search-section input {
+    padding: 12px;
+  }
+
+  .search-section button {
+    padding: 12px 16px;
+  }
+
+  .posts-list {
+    grid-template-columns: 1fr;
+  }
+
+  .post-card {
+    padding: 22px;
+  }
+}

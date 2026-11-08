@@ -20,3 +20,16 @@ export interface AuthResponse {
   message: string;
   user: User;
 }
+
+export interface CurrentUser {
+  id: string;
+  username: string;
+  email: string;
+  role: 'ADMIN' | 'AUTHOR' | 'READER';
+  createdAt: string;
+}
+
+export interface CurrentUserResponse {
+  message: string;
+  user: CurrentUser;
+}

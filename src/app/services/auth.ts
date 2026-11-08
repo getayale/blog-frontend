@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import type { RegisterRequest, LoginRequest } from '../models/auth';
+import type {RegisterRequest,LoginRequest,CurrentUserResponse} from '../models/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -28,4 +28,10 @@ export class Auth {
       withCredentials: true
     });
   }
+
+getCurrentUser() {
+  return this.http.get<CurrentUserResponse>(`${this.apiUrl}/me`, {
+    withCredentials: true
+  });
+}
 }

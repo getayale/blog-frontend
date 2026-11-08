@@ -1,0 +1,117 @@
+
+<div class="post-details-container">
+
+  <!-- Back Navigation -->
+  <a [routerLink]="backLink">
+    {{ backLabel }}
+  </a>
+
+  <!-- Loading -->
+  @if (isLoading) {
+    <p>Loading post...</p>
+  }
+
+  <!-- Error -->
+  @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+  }
+
+  <!-- Post Details -->
+  @if (!isLoading && !errorMessage && post) {
+    <article class="post">
+
+      <h1>{{ post.title }}</h1>
+
+      <div class="post-meta">
+        <span>
+          Written by: {{ post.author.username }}
+        </span>
+
+        <span>
+          Published: {{ post.createdAt | date:'mediumDate' }}
+        </span>
+      </div>
+
+      <div class="post-content">
+        <p>{{ post.content }}</p>
+      </div>
+
+    </article>
+  }
+
+  <!-- Comments Section -->
+  <section class="comments-section">
+
+    <h2>Comments ({{ comments.length }})</h2>
+
+    @if (comments.length === 0) {
+      <p>No comments yet. Be the first to comment!</p>
+    }
+
+    @if (comments.length > 0) {
+      <div class="comments-list">
+
+        @for (comment of comments; track comment.id) {
+
+          <article class="comment">
+
+            <strong>{{ comment.author.username }}</strong>
+
+            <p>{{ comment.content }}</p>
+
+            <small>
+              Posted on: {{ comment.createdAt | date:'mediumDate' }}
+            </small>
+
+          </article>
+
+        }
+
+      </div>
+    }
+
+  </section>
+
+  <!-- Add Comment Section -->
+  <section class="add-comment-section">
+
+    @if (isAuthenticated) {
+
+      <h3>Leave a Comment</h3>
+
+      <textarea
+        [(ngModel)]="newComment"
+        placeholder="Write your comment..."
+        rows="4"
+        [disabled]="isSubmittingComment">
+      </textarea>
+
+      <button
+        (click)="addComment()"
+        [disabled]="isSubmittingComment">
+        {{ isSubmittingComment ? 'Submitting...' : 'Submit Comment' }}
+      </button>
+
+      @if (commentMessage) {
+        <p>{{ commentMessage }}</p>
+      }
+
+      @if (commentError) {
+        <p class="error-message">{{ commentError }}</p>
+      }
+
+    }
+
+    @if (!isAuthenticated) {
+
+      <p>
+        Please
+        <a routerLink="/login">log in</a>
+        to leave a comment.
+      </p>
+
+    }
+
+  </section>
+
+</div>

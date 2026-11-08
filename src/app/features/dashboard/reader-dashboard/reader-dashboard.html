@@ -1,0 +1,89 @@
+
+<div class="reader-dashboard">
+
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a routerLink="/">Gech Blog</a>
+    </div>
+
+    <div class="navbar-links">
+      
+
+      <button class="logout-btn" (click)="logout()">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <header class="dashboard-header">
+    <h1>Reader Dashboard</h1>
+    <p>Explore published articles and discover new ideas.</p>
+  </header>
+
+  <section class="posts-section">
+
+    <h2>Published Blog Posts</h2>
+
+    <div class="search-section">
+      <input
+        type="text"
+        placeholder="Search blog posts..."
+        [(ngModel)]="searchKeyword"
+      >
+
+      <button (click)="searchPosts()">
+        Search
+      </button>
+    </div>
+
+    @if (isLoading) {
+      <p>Loading posts...</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    @if (!isLoading && !errorMessage && posts.length === 0) {
+      <p>No published posts available.</p>
+    }
+
+    @if (!isLoading && !errorMessage && posts.length > 0) {
+      <div class="posts-list">
+
+        @for (post of posts; track post.id) {
+          <article class="post-card">
+
+            <h3>{{ post.title }}</h3>
+
+            <p>
+              {{ post.content.length > 150
+                ? post.content.substring(0, 150) + '...'
+                : post.content }}
+            </p>
+
+            <div class="post-meta">
+              <small>Written by: {{ post.author.username }}</small>
+            </div>
+
+            <div class="post-actions">
+              <button
+                [routerLink]="['/posts', post.id]"
+                [queryParams]="{ from: 'dashboard' }">
+                Read More →
+              </button>
+            </div>
+
+          </article>
+        }
+
+      </div>
+    }
+
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2026 Gech Blog. All rights reserved.</p>
+  </footer>
+
+</div>

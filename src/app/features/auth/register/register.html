@@ -1,0 +1,104 @@
+
+<div class="register-container">
+
+  <a routerLink="/" class="back-home">← Back to Home</a>
+
+  <h2>Create an Account</h2>
+
+  <p class="description">
+    Join Gech Blog and start sharing your thoughts.
+  </p>
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <label for="username">Username</label>
+    <input
+      type="text"
+      id="username"
+      formControlName="username"
+      placeholder="Enter your username"
+    >
+
+    @if (registerForm.controls.username.touched &&
+         registerForm.controls.username.hasError('required')) {
+      <p>Username is required.</p>
+    }
+
+    <label for="email">Email</label>
+    <input
+      type="email"
+      id="email"
+      formControlName="email"
+      placeholder="Enter your email"
+    >
+
+    @if (registerForm.controls.email.touched &&
+         registerForm.controls.email.hasError('required')) {
+      <p>Email is required.</p>
+    }
+
+    @if (registerForm.controls.email.touched &&
+         registerForm.controls.email.hasError('email')) {
+      <p>Please enter a valid email address.</p>
+    }
+
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      formControlName="password"
+      placeholder="Enter your password"
+    >
+
+    @if (registerForm.controls.password.touched &&
+         registerForm.controls.password.hasError('required')) {
+      <p>Password is required.</p>
+    }
+
+    @if (registerForm.controls.password.touched &&
+         registerForm.controls.password.hasError('minlength')) {
+      <p>Password must contain at least 8 characters.</p>
+    }
+
+    <label for="confirmPassword">Confirm Password</label>
+    <input
+      type="password"
+      id="confirmPassword"
+      formControlName="confirmPassword"
+      placeholder="Confirm your password"
+    >
+
+    @if (registerForm.controls.confirmPassword.touched &&
+         registerForm.controls.confirmPassword.hasError('required')) {
+      <p>Please confirm your password.</p>
+    }
+
+    @if (registerForm.controls.confirmPassword.touched &&
+         registerForm.hasError('passwordMismatch')) {
+      <p>Passwords do not match.</p>
+    }
+
+    <button type="submit" [disabled]="isLoading">
+      @if (isLoading) {
+        Creating account...
+      } @else {
+        Register
+      }
+    </button>
+
+    @if (message) {
+      <p>{{ message }}</p>
+    }
+
+    @if (errorMessage) {
+      <p>{{ errorMessage }}</p>
+    }
+
+    <p class="login-prompt">
+      Already have an account?
+    </p>
+
+    <a routerLink="/login" class="login-link">Login</a>
+
+  </form>
+</div>

@@ -1,0 +1,106 @@
+
+<div class="home-container">
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a routerLink="/">Gech Blog</a>
+    </div>
+
+    <div class="navbar-links">
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register" class="signup-button">Sign Up</a>
+    </div>
+  </nav>
+
+  <!-- Welcome Section -->
+  <header class="hero-section">
+    <h1>{{ title }}</h1>
+
+    <p>{{ description }}</p>
+
+    <p>Discover articles, explore ideas, and share knowledge.</p>
+  </header>
+
+  <!-- Blog Posts -->
+  <section class="posts-section">
+
+    <h2>Latest Blog Posts</h2>
+
+    <!-- Search -->
+    <div class="search-section">
+      <input
+        type="text"
+        placeholder="Search blog posts..."
+        [(ngModel)]="searchKeyword"
+      >
+
+      <button (click)="searchPosts()">
+        Search
+      </button>
+    </div>
+
+    <!-- Loading -->
+    @if (isLoading) {
+      <p>Loading posts...</p>
+    }
+
+    <!-- Error -->
+    @if (errorMessage) {
+      <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading && !errorMessage && posts.length === 0) {
+      <p>No blog posts available.</p>
+    }
+
+    <!-- Posts List -->
+    @if (!isLoading && !errorMessage && posts.length > 0) {
+
+      <div class="posts-list">
+
+        @for (post of posts; track post.id) {
+
+          <article class="post-card">
+
+            <h3>{{ post.title }}</h3>
+
+            <p>
+              {{ post.content.length > 150
+                ? post.content.substring(0, 150) + '...'
+                : post.content }}
+            </p>
+
+            <div class="post-meta">
+              <small>
+                Written by: {{ post.author.username }}
+              </small>
+
+              <small>
+                {{ post.createdAt | date:'mediumDate' }}
+              </small>
+            </div>
+
+           <a
+  [routerLink]="['/posts', post.id]"
+  [queryParams]="{ from: 'home' }">
+  Read More →
+</a>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Gech Blog. All rights reserved.</p>
+  </footer>
+
+</div>
