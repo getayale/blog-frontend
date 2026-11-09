@@ -44,6 +44,16 @@
 
     <h2>Comments ({{ comments.length }})</h2>
 
+    <!-- Success Message -->
+    @if (commentMessage) {
+      <p class="success-message">{{ commentMessage }}</p>
+    }
+
+    <!-- Error Message -->
+    @if (commentError) {
+      <p class="error-message">{{ commentError }}</p>
+    }
+
     @if (comments.length === 0) {
       <p>No comments yet. Be the first to comment!</p>
     }
@@ -57,11 +67,58 @@
 
             <strong>{{ comment.author.username }}</strong>
 
-            <p>{{ comment.content }}</p>
+            <!-- Editing Mode -->
+            @if (editingCommentId === comment.id) {
 
-            <small>
-              Posted on: {{ comment.createdAt | date:'mediumDate' }}
-            </small>
+              <textarea
+                [(ngModel)]="editedComment"
+                rows="4"
+                [disabled]="isUpdatingComment">
+              </textarea>
+
+              <button
+                (click)="updateComment()"
+                [disabled]="isUpdatingComment || !editedComment.trim()">
+                {{ isUpdatingComment ? 'Saving...' : 'Save Changes' }}
+              </button>
+
+              <button
+                (click)="cancelEditComment()"
+                [disabled]="isUpdatingComment">
+                Cancel
+              </button>
+
+            }
+
+            <!-- Normal Comment Display -->
+            @else {
+
+              <p>{{ comment.content }}</p>
+
+              <small>
+                Posted on: {{ comment.createdAt | date:'mediumDate' }}
+              </small>
+
+              <!-- Comment Owner Actions -->
+              @if (currentUser && currentUser.id === comment.authorId) {
+
+                <div class="comment-actions">
+
+                  <button
+                    (click)="startEditComment(comment)">
+                    Edit
+                  </button>
+
+                  <button
+                    (click)="deleteComment(comment.id)">
+                    Delete
+                  </button>
+
+                </div>
+
+              }
+
+            }
 
           </article>
 
@@ -88,17 +145,9 @@
 
       <button
         (click)="addComment()"
-        [disabled]="isSubmittingComment">
+        [disabled]="isSubmittingComment || !newComment.trim()">
         {{ isSubmittingComment ? 'Submitting...' : 'Submit Comment' }}
       </button>
-
-      @if (commentMessage) {
-        <p>{{ commentMessage }}</p>
-      }
-
-      @if (commentError) {
-        <p class="error-message">{{ commentError }}</p>
-      }
 
     }
 

@@ -154,4 +154,94 @@ export class PostDetails {
       }
     });
   }
+
+ 
+ // Edit comment
+editingCommentId: string | null = null;
+editedComment = '';
+isUpdatingComment = false;
+
+startEditComment(comment:CommentModel){
+  this.editingCommentId=comment.id;
+  this.editedComment=comment.content;
+}
+
+cancelEditComment(){
+  this.editingCommentId=null;
+  this.editedComment='';
+}
+
+
+
+updateComment() {
+  if (!this.editingCommentId || !this.editedComment.trim()) {
+    return;
+  }
+
+  this.isUpdatingComment = true;
+  this.commentError = '';
+  this.commentMessage = '';
+
+  this.commentService.updateComment(
+    this.editingCommentId,
+    this.editedComment.trim()
+  ).subscribe({
+    next: (response) => {
+      this.isUpdatingComment = false;
+      this.editingCommentId = null;
+      this.editedComment = '';
+      this.commentMessage = response.message;
+
+      const postId = this.route.snapshot.paramMap.get('id');
+
+      if (postId) {
+        this.loadComments(postId);
+      }
+
+      this.cdr.markForCheck();
+    },
+    error: (error) => {
+      this.isUpdatingComment = false;
+      this.commentError =
+        error.error?.message || 'Unable to update comment.';
+
+      this.cdr.markForCheck();
+    }
+  });
+}
+
+
+//delete a comment
+
+deleteComment(commentId:string){
+
+  const confirmed=confirm( 'Are you sure you want to delete this comment?');
+
+  if(!confirmed){
+    return;
+  }
+
+  this.commentError='';
+  this.commentMessage='';
+  this.commentService.deleteComment(commentId).subscribe({
+next:(response)=>{
+  this.commentMessage=response.message;
+
+  const postId=this.route.snapshot.paramMap.get('id');
+
+  if(postId){
+    this.loadComments(postId);
+  }
+
+  this.cdr.markForCheck();
+},
+
+error:(error)=>{
+      this.commentError=
+               error.error?.message || 'Unable to delete comment.';
+      this.cdr.markForCheck();
+}
+  });
+}
+
 }

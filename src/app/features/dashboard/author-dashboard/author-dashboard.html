@@ -1,1 +1,566 @@
-<p>author-dashboard works!</p>
+
+<div class="author-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-icon">G</div>
+      <div>
+        <h2>GechBlog</h2>
+        <span>Author Workspace</span>
+      </div>
+    </div>
+
+    <div class="sidebar-menu">
+
+      <p class="menu-label">MAIN MENU</p>
+
+      <button type="button" class="nav-link active"
+        (click)="navigateToSection('overview')">
+        <span class="nav-icon">▦</span>
+        <span>Overview</span>
+      </button>
+
+      <button type="button" class="nav-link"
+        (click)="navigateToSection('my-posts')">
+        <span class="nav-icon">▤</span>
+        <span>My Posts</span>
+      </button>
+
+      <button type="button" class="nav-link"
+        (click)="navigateToSection('create-post')">
+        <span class="nav-icon">＋</span>
+        <span>Create Post</span>
+      </button>
+
+      <button type="button" class="nav-link"
+        (click)="navigateToSection('comments')">
+        <span class="nav-icon">☰</span>
+        <span>Comments</span>
+      </button>
+
+      <p class="menu-label menu-label-spaced">NAVIGATION</p>
+
+      <a routerLink="/" class="nav-link">
+        <span class="nav-icon">⌂</span>
+        <span>Visit Website</span>
+      </a>
+
+    </div>
+
+    <!-- SIDEBAR BOTTOM -->
+    <div class="sidebar-bottom">
+
+      <div class="profile-card">
+        <div class="profile-avatar">
+          {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'A' }}
+        </div>
+
+        <div class="profile-info">
+          <strong>{{ currentUser?.username || 'Author' }}</strong>
+          <span>Author Account</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="logout-btn"
+        (click)="logout()"
+        [disabled]="isLoggingOut">
+
+        <span>⇥</span>
+        {{ isLoggingOut ? 'Logging out...' : 'Logout' }}
+
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+
+      <div class="topbar-heading">
+        <h1>Author Dashboard</h1>
+        <p>Manage your posts and track your writing activity.</p>
+      </div>
+
+      <div class="topbar-right">
+        <div class="date-display">
+          {{ today | date:'mediumDate' }}
+        </div>
+
+        <div class="topbar-avatar">
+          {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'A' }}
+        </div>
+      </div>
+
+    </header>
+
+
+    <!-- ALERT MESSAGES -->
+    @if (successMessage) {
+      <div class="alert alert-success">
+        <span>✓</span>
+        {{ successMessage }}
+        <button type="button" (click)="successMessage = ''">×</button>
+      </div>
+    }
+
+    @if (errorMessage) {
+      <div class="alert alert-error">
+        <span>!</span>
+        {{ errorMessage }}
+        <button type="button" (click)="errorMessage = ''">×</button>
+      </div>
+    }
+
+
+    <!-- OVERVIEW SECTION -->
+    <section id="overview" class="dashboard-section">
+
+      <div class="welcome-section">
+        <div>
+          <p class="welcome-label">AUTHOR WORKSPACE</p>
+          <h2>
+            Welcome back, {{ currentUser?.username || 'Author' }}!
+          </h2>
+          <p>Here's an overview of your writing activity.</p>
+        </div>
+
+        <button
+          type="button"
+          class="primary-btn"
+          (click)="openCreateForm()">
+          <span>＋</span>
+          Write New Post
+        </button>
+      </div>
+
+
+      <!-- STATISTICS -->
+      <div class="stats-grid">
+
+        <div class="stat-card">
+          <div class="stat-icon posts-icon">▤</div>
+          <div>
+            <span>Total Posts</span>
+            <h3>{{ stats.totalPosts }}</h3>
+            <small>All your posts</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon published-icon">✓</div>
+          <div>
+            <span>Published Posts</span>
+            <h3>{{ stats.publishedPosts }}</h3>
+            <small>Visible to readers</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon draft-icon">✎</div>
+          <div>
+            <span>Draft Posts</span>
+            <h3>{{ stats.draftPosts }}</h3>
+            <small>Not published yet</small>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon comments-icon">☰</div>
+          <div>
+            <span>Total Comments</span>
+            <h3>{{ stats.totalComments }}</h3>
+            <small>Comments on your posts</small>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- CREATE / EDIT POST SECTION -->
+    <section id="create-post" class="dashboard-section">
+
+      @if (showPostForm) {
+
+        <div class="content-card">
+
+          <div class="section-heading">
+            <div>
+              <h2>
+                {{ editingPostId ? 'Edit Post' : 'Create New Post' }}
+              </h2>
+
+              <p>
+                {{ editingPostId
+                  ? 'Update your existing article.'
+                  : 'Write and share something interesting with readers.' }}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="close-btn"
+              (click)="closePostForm()"
+              [disabled]="isSubmitting">
+              ×
+            </button>
+          </div>
+
+          <form (ngSubmit)="savePost()">
+
+            <div class="form-group">
+              <label for="postTitle">Post Title</label>
+
+              <input
+                id="postTitle"
+                type="text"
+                name="title"
+                [(ngModel)]="postForm.title"
+                placeholder="Enter your post title..."
+                required
+                maxlength="200">
+            </div>
+
+            <div class="form-group">
+              <label for="postContent">Post Content</label>
+
+              <textarea
+                id="postContent"
+                name="content"
+                [(ngModel)]="postForm.content"
+                placeholder="Start writing your article..."
+                rows="12"
+                required>
+              </textarea>
+            </div>
+
+            <div class="form-actions">
+
+              <button
+                type="button"
+                class="secondary-btn"
+                (click)="closePostForm()"
+                [disabled]="isSubmitting">
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                class="primary-btn"
+                [disabled]="isSubmitting">
+
+                {{
+                  isSubmitting
+                    ? 'Saving...'
+                    : editingPostId
+                      ? 'Update Post'
+                      : 'Create Post'
+                }}
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+      } @else {
+
+        <div class="create-post-banner">
+
+          <div>
+            <h2>Have something to share?</h2>
+            <p>Write your next article and share your ideas with readers.</p>
+          </div>
+
+          <button
+            type="button"
+            class="primary-btn"
+            (click)="openCreateForm()">
+            ＋ Create Post
+          </button>
+
+        </div>
+
+      }
+
+    </section>
+
+
+    <!-- MY POSTS SECTION -->
+    <section id="my-posts" class="dashboard-section">
+
+      <div class="content-card">
+
+        <div class="section-heading">
+          <div>
+            <h2>My Posts</h2>
+            <p>Manage your articles, drafts, and published content.</p>
+          </div>
+
+          <button
+            type="button"
+            class="primary-btn"
+            (click)="openCreateForm()">
+            ＋ New Post
+          </button>
+        </div>
+
+
+        <!-- SEARCH -->
+        <div class="toolbar">
+
+          <div class="search-box">
+            <span>⌕</span>
+
+            <input
+              type="search"
+              name="keyword"
+              [(ngModel)]="keyword"
+              placeholder="Search your posts..."
+              (keyup.enter)="searchPosts()">
+          </div>
+
+          <button
+            type="button"
+            class="secondary-btn"
+            (click)="searchPosts()">
+            Search
+          </button>
+
+          <button
+            type="button"
+            class="secondary-btn"
+            (click)="clearSearch()">
+            Clear
+          </button>
+
+        </div>
+
+
+        <!-- POSTS TABLE -->
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>POST</th>
+                <th>COMMENTS</th>
+                <th>CREATED</th>
+                <th>STATUS</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              @if (isLoadingPosts) {
+
+                <tr>
+                  <td colspan="5" class="empty-state">
+                    Loading your posts...
+                  </td>
+                </tr>
+
+              } @else if (posts.length === 0) {
+
+                <tr>
+                  <td colspan="5" class="empty-state">
+                    <div class="empty-icon">▤</div>
+                    <h3>No posts found</h3>
+                    <p>Create your first post or try another search.</p>
+                  </td>
+                </tr>
+
+              } @else {
+
+                @for (post of posts; track post.id) {
+
+                  <tr>
+
+                    <td>
+                      <div class="post-title-cell">
+                        <strong>{{ post.title }}</strong>
+                        <small>
+                          {{ post.content | slice:0:90 }}
+                          {{ post.content.length > 90 ? '...' : '' }}
+                        </small>
+                      </div>
+                    </td>
+
+                    <td>
+                      {{ post._count.comments }}
+                    </td>
+
+                    <td>
+                      {{ post.createdAt | date:'mediumDate' }}
+                    </td>
+
+                    <td>
+                      <span
+                        class="status-badge"
+                        [class.published]="post.published"
+                        [class.draft]="!post.published">
+
+                        {{ getPostStatus(post) }}
+
+                      </span>
+                    </td>
+
+                    <td>
+                      <div class="action-buttons">
+
+                        <button
+                          type="button"
+                          class="action-btn edit-btn"
+                          title="Edit post"
+                          (click)="openEditForm(post)">
+                          ✎
+                        </button>
+
+                        <button
+                          type="button"
+                          class="action-btn publish-btn"
+                          [title]="post.published ? 'Unpublish post' : 'Publish post'"
+                          (click)="togglePublish(post)">
+
+                          {{ post.published ? '↓' : '↑' }}
+
+                        </button>
+
+                        <button
+                          type="button"
+                          class="action-btn delete-btn"
+                          title="Delete post"
+                          (click)="deletePost(post)">
+                          ×
+                        </button>
+
+                        @if (post.published) {
+                          <a
+                            class="action-btn view-btn"
+                            [routerLink]="['/posts', post.id]"
+                            title="View post">
+                            ↗
+                          </a>
+                        }
+
+                      </div>
+                    </td>
+
+                  </tr>
+
+                }
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <!-- PAGINATION -->
+        @if (!isLoadingPosts && totalPages > 1) {
+
+          <div class="pagination">
+
+            <span>
+              Page {{ currentPage }} of {{ totalPages }}
+              ({{ totalPosts }} posts)
+            </span>
+
+            <div class="pagination-controls">
+
+              <button
+                type="button"
+                class="page-btn"
+                [disabled]="currentPage === 1"
+                (click)="changePage(currentPage - 1)">
+                Previous
+              </button>
+
+              @for (page of paginationPages; track page) {
+
+                <button
+                  type="button"
+                  class="page-btn"
+                  [class.active]="currentPage === page"
+                  (click)="changePage(page)">
+                  {{ page }}
+                </button>
+
+              }
+
+              <button
+                type="button"
+                class="page-btn"
+                [disabled]="currentPage === totalPages"
+                (click)="changePage(currentPage + 1)">
+                Next
+              </button>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- COMMENTS SECTION -->
+    <section id="comments" class="dashboard-section">
+
+      <div class="content-card">
+
+        <div class="section-heading">
+          <div>
+            <h2>Comments Overview</h2>
+            <p>See the comments received on your articles.</p>
+          </div>
+        </div>
+
+        <div class="comments-summary">
+          <div class="comment-summary-icon">☰</div>
+
+          <div>
+            <span>Total Comments</span>
+            <h3>{{ stats.totalComments }}</h3>
+          </div>
+        </div>
+
+        <p class="feature-note">
+          Detailed comment management will be connected in the next
+          development step.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="dashboard-footer">
+      <p>© 2026 GechBlog. Author Workspace.</p>
+      <span>Write. Share. Inspire.</span>
+    </footer>
+
+  </main>
+
+</div>

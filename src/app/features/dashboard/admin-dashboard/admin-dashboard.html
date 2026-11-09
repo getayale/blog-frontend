@@ -1,1 +1,740 @@
-<p>admin-dashboard works!</p>
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-icon">G</div>
+      <div>
+        <h2>GechBlog</h2>
+        <span>Administration</span>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+<div class="sidebar-menu">
+  <p class="menu-label">MAIN MENU</p>
+
+  <button type="button" class="nav-link" (click)="navigateToSection('overview')">
+    <span class="nav-icon">▦</span>
+    <span>Overview</span>
+  </button>
+
+  <button type="button" class="nav-link" (click)="navigateToSection('users')">
+    <span class="nav-icon">♙</span>
+    <span>Users</span>
+  </button>
+
+  <button type="button" class="nav-link" (click)="navigateToSection('posts')">
+    <span class="nav-icon">▤</span>
+    <span>Posts</span>
+  </button>
+
+  <button type="button" class="nav-link" (click)="navigateToSection('comments')">
+    <span class="nav-icon">☰</span>
+    <span>Comments</span>
+  </button>
+
+  <p class="menu-label menu-label-spaced">NAVIGATION</p>
+
+ 
+</div>
+    
+
+    <div class="sidebar-bottom">
+
+      <div class="sidebar-admin">
+        <div class="admin-avatar">
+          {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'A' }}
+        </div>
+
+        <div class="admin-info">
+          <strong>{{ currentUser?.username || 'Administrator' }}</strong>
+          <span>Administrator</span>
+        </div>
+      </div>
+
+      <button
+        class="logout-btn"
+        (click)="logout()"
+        [disabled]="isLoggingOut"
+      >
+        <span>⇥</span>
+        {{ isLoggingOut ? 'Logging out...' : 'Logout' }}
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+
+      <div class="topbar-heading">
+        <h1>Admin Dashboard</h1>
+        <p>Manage your blog platform from one place.</p>
+      </div>
+
+      <div class="topbar-right">
+        <div class="topbar-date">
+          {{ today | date:'mediumDate' }}
+        </div>
+
+        <div class="topbar-profile">
+          <div class="profile-avatar">
+            {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'A' }}
+          </div>
+
+          <div class="profile-details">
+            <strong>{{ currentUser?.username || 'Administrator' }}</strong>
+            <span>Admin</span>
+          </div>
+        </div>
+      </div>
+
+    </header>
+
+
+    <!-- NOTIFICATIONS -->
+    @if (errorMessage) {
+      <div class="alert alert-error">
+        <span>{{ errorMessage }}</span>
+        <button type="button" (click)="clearMessages()">×</button>
+      </div>
+    }
+
+    @if (successMessage) {
+      <div class="alert alert-success">
+        <span>{{ successMessage }}</span>
+        <button type="button" (click)="clearMessages()">×</button>
+      </div>
+    }
+
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="dashboard-section">
+
+      <div class="section-heading">
+        <div>
+          <span class="section-subtitle">OVERVIEW</span>
+          <h2>Platform Statistics</h2>
+          <p>Here's what's happening on your platform.</p>
+        </div>
+      </div>
+
+
+      <div class="stats-grid">
+
+        <div class="stat-card">
+          <div class="stat-icon users-icon">♙</div>
+          <div class="stat-content">
+            <span>Total Users</span>
+            @if (isLoadingStats) {
+              <h3>...</h3>
+            } @else {
+              <h3>{{ stats.totalUsers }}</h3>
+            }
+            <small>Registered users</small>
+          </div>
+        </div>
+
+
+        <div class="stat-card">
+          <div class="stat-icon authors-icon">✎</div>
+          <div class="stat-content">
+            <span>Total Authors</span>
+            @if (isLoadingStats) {
+              <h3>...</h3>
+            } @else {
+              <h3>{{ stats.totalAuthors }}</h3>
+            }
+            <small>Content creators</small>
+          </div>
+        </div>
+
+
+        <div class="stat-card">
+          <div class="stat-icon readers-icon">◉</div>
+          <div class="stat-content">
+            <span>Total Readers</span>
+            @if (isLoadingStats) {
+              <h3>...</h3>
+            } @else {
+              <h3>{{ stats.totalReaders }}</h3>
+            }
+            <small>Blog readers</small>
+          </div>
+        </div>
+
+
+        <div class="stat-card">
+          <div class="stat-icon posts-icon">▤</div>
+          <div class="stat-content">
+            <span>Total Posts</span>
+            @if (isLoadingStats) {
+              <h3>...</h3>
+            } @else {
+              <h3>{{ stats.totalPosts }}</h3>
+            }
+            <small>Published and unpublished</small>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- USER MANAGEMENT -->
+    <section id="users" class="dashboard-section">
+
+      <div class="section-heading">
+        <div>
+          <span class="section-subtitle">USER MANAGEMENT</span>
+          <h2>Manage Users</h2>
+          <p>View users and manage their platform roles.</p>
+        </div>
+
+        <div class="section-count">
+          {{ userTotalUsers }} Users
+        </div>
+      </div>
+
+
+      <div class="content-card">
+
+        <div class="table-toolbar">
+          <div>
+            <h3>All Users</h3>
+            <p>Manage registered platform accounts.</p>
+          </div>
+
+          <form class="search-form" (ngSubmit)="searchUsers()">
+            <input
+              type="text"
+              name="userKeyword"
+              [(ngModel)]="userKeyword"
+              placeholder="Search users..."
+            >
+
+            <button type="submit" class="search-btn">Search</button>
+
+            <button
+              type="button"
+              class="clear-btn"
+              (click)="clearUserSearch()"
+            >
+              Clear
+            </button>
+          </form>
+        </div>
+
+
+        @if (isLoadingUsers) {
+          <div class="loading-state">Loading users...</div>
+        } @else {
+
+          <div class="table-responsive">
+            <table class="admin-table">
+
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Joined</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                @for (user of users; track user.id) {
+                  <tr>
+
+                    <td>
+                      <div class="table-user">
+                        <div class="table-avatar">
+                          {{ user.username.charAt(0).toUpperCase() }}
+                        </div>
+                        <strong>{{ user.username }}</strong>
+                      </div>
+                    </td>
+
+                    <td>{{ user.email }}</td>
+
+                    <td>
+                      <span class="role-badge" [class]="'role-badge ' + user.role.toLowerCase()">
+                        {{ user.role }}
+                      </span>
+                    </td>
+
+                    <td>{{ user.createdAt | date:'mediumDate' }}</td>
+
+                    <td>
+                      <div class="action-group">
+
+                        <select
+                          [ngModel]="user.role"
+                          (ngModelChange)="changeUserRole(user, $event)"
+                          [name]="'role-' + user.id"
+                          aria-label="Change user role"
+                        >
+                          <option value="READER">Reader</option>
+                          <option value="AUTHOR">Author</option>
+                          <option value="ADMIN">Admin</option>
+                        </select>
+
+                        <button
+                          type="button"
+                          class="delete-btn"
+                          (click)="deleteUser(user)"
+                        >
+                          Delete
+                        </button>
+
+                      </div>
+                    </td>
+
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="5" class="empty-state">
+                      No users found.
+                    </td>
+                  </tr>
+                }
+
+              </tbody>
+            </table>
+          </div>
+
+
+          <div class="pagination">
+
+            <span>
+              Page {{ userPage }} of {{ userTotalPages || 1 }}
+            </span>
+
+            <div class="pagination-actions">
+              <button
+                type="button"
+                (click)="previousUserPage()"
+                [disabled]="userPage <= 1"
+              >
+                Previous
+              </button>
+
+              <button
+                type="button"
+                (click)="nextUserPage()"
+                [disabled]="userPage >= userTotalPages"
+              >
+                Next
+              </button>
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- POST MANAGEMENT -->
+    <section id="posts" class="dashboard-section">
+
+      <div class="section-heading">
+        <div>
+          <span class="section-subtitle">CONTENT MANAGEMENT</span>
+          <h2>Manage Posts</h2>
+          <p>Review, edit, publish, and remove blog posts.</p>
+        </div>
+
+        <div class="section-count">
+          {{ postTotalPosts }} Posts
+        </div>
+      </div>
+
+
+      <div class="content-card">
+
+        <div class="table-toolbar">
+          <div>
+            <h3>All Posts</h3>
+            <p>Manage content created by authors.</p>
+          </div>
+
+          <form class="search-form" (ngSubmit)="searchPosts()">
+            <input
+              type="text"
+              name="postKeyword"
+              [(ngModel)]="postKeyword"
+              placeholder="Search posts..."
+            >
+
+            <button type="submit" class="search-btn">Search</button>
+
+            <button
+              type="button"
+              class="clear-btn"
+              (click)="clearPostSearch()"
+            >
+              Clear
+            </button>
+          </form>
+        </div>
+
+
+        @if (isLoadingPosts) {
+          <div class="loading-state">Loading posts...</div>
+        } @else {
+
+          <div class="table-responsive">
+            <table class="admin-table">
+
+              <thead>
+                <tr>
+                  <th>Post</th>
+                  <th>Author</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                @for (post of posts; track post.id) {
+                  <tr>
+
+                    <td>
+                      <div class="post-title-cell">
+                        <strong>{{ post.title }}</strong>
+                        <small>{{ post.content | slice:0:65 }}...</small>
+                      </div>
+                    </td>
+
+                    <td>{{ post.author.username }}</td>
+
+                    <td>
+                      <span
+                        class="status-badge"
+                        [class.published]="post.published"
+                        [class.unpublished]="!post.published"
+                      >
+                        {{ post.published ? 'Published' : 'Unpublished' }}
+                      </span>
+                    </td>
+
+                    <td>{{ post.createdAt | date:'mediumDate' }}</td>
+
+                    <td>
+                      <div class="action-group">
+
+                        <button
+                          type="button"
+                          class="view-btn"
+                          (click)="showPostComments(post)"
+                        >
+                          Comments
+                        </button>
+
+                        <button
+                          type="button"
+                          class="edit-btn"
+                          (click)="startEditingPost(post)"
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          type="button"
+                          class="publish-btn"
+                          (click)="togglePostPublish(post)"
+                        >
+                          {{ post.published ? 'Unpublish' : 'Publish' }}
+                        </button>
+
+                        <button
+                          type="button"
+                          class="delete-btn"
+                          (click)="deletePost(post)"
+                        >
+                          Delete
+                        </button>
+
+                      </div>
+                    </td>
+
+                  </tr>
+
+                  @if (editingPostId === post.id) {
+                    <tr>
+                      <td colspan="5">
+
+                        <div class="edit-post-form">
+
+                          <h4>Edit Post</h4>
+
+                          <label>Title</label>
+                          <input
+                            type="text"
+                            [(ngModel)]="editPostTitle"
+                            [name]="'edit-title-' + post.id"
+                          >
+
+                          <label>Content</label>
+                          <textarea
+                            rows="5"
+                            [(ngModel)]="editPostContent"
+                            [name]="'edit-content-' + post.id"
+                          ></textarea>
+
+                          <div class="edit-actions">
+                            <button
+                              type="button"
+                              class="save-btn"
+                              (click)="savePostChanges(post.id)"
+                            >
+                              Save Changes
+                            </button>
+
+                            <button
+                              type="button"
+                              class="cancel-btn"
+                              (click)="cancelEditingPost()"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+
+                        </div>
+
+                      </td>
+                    </tr>
+                  }
+
+                } @empty {
+                  <tr>
+                    <td colspan="5" class="empty-state">
+                      No posts found.
+                    </td>
+                  </tr>
+                }
+
+              </tbody>
+            </table>
+          </div>
+
+
+          <div class="pagination">
+
+            <span>
+              Page {{ postPage }} of {{ postTotalPages || 1 }}
+            </span>
+
+            <div class="pagination-actions">
+              <button
+                type="button"
+                (click)="previousPostPage()"
+                [disabled]="postPage <= 1"
+              >
+                Previous
+              </button>
+
+              <button
+                type="button"
+                (click)="nextPostPage()"
+                [disabled]="postPage >= postTotalPages"
+              >
+                Next
+              </button>
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- COMMENT MANAGEMENT -->
+    <section id="comments" class="dashboard-section">
+
+      <div class="section-heading">
+        <div>
+          <span class="section-subtitle">DISCUSSION MANAGEMENT</span>
+          <h2>Manage Comments</h2>
+          <p>Review and moderate comments across the platform.</p>
+        </div>
+
+        <div class="section-count">
+          {{ commentTotalComments }} Comments
+        </div>
+      </div>
+
+
+      <div class="content-card">
+
+        <div class="table-toolbar">
+          <div>
+            <h3>
+              @if (selectedPostId) {
+                Comments for {{ selectedPostTitle }}
+              } @else {
+                All Comments
+              }
+            </h3>
+            <p>Manage reader discussions.</p>
+          </div>
+
+          <div class="toolbar-actions">
+
+            @if (selectedPostId) {
+              <button
+                type="button"
+                class="clear-btn"
+                (click)="hidePostComments()"
+              >
+                Show All Comments
+              </button>
+            }
+
+            <form class="search-form" (ngSubmit)="searchComments()">
+              <input
+                type="text"
+                name="commentKeyword"
+                [(ngModel)]="commentKeyword"
+                placeholder="Search comments..."
+              >
+
+              <button type="submit" class="search-btn">Search</button>
+
+              <button
+                type="button"
+                class="clear-btn"
+                (click)="clearCommentSearch()"
+              >
+                Clear
+              </button>
+            </form>
+
+          </div>
+        </div>
+
+
+        @if (isLoadingComments) {
+          <div class="loading-state">Loading comments...</div>
+        } @else {
+
+          <div class="comments-list">
+
+            @for (comment of comments; track comment.id) {
+
+              @if (!selectedPostId || comment.postId === selectedPostId) {
+
+                <div class="comment-card">
+
+                  <div class="comment-main">
+
+                    <div class="comment-avatar">
+                      {{ comment.author.username.charAt(0).toUpperCase() }}
+                    </div>
+
+                    <div class="comment-details">
+
+                      <div class="comment-header">
+                        <strong>{{ comment.author.username }}</strong>
+                        <span>{{ comment.createdAt | date:'medium' }}</span>
+                      </div>
+
+                      <p>{{ comment.content }}</p>
+
+                      <small>
+                        On post:
+                        <strong>{{ comment.post.title }}</strong>
+                      </small>
+
+                    </div>
+
+                  </div>
+
+                  <button
+                    type="button"
+                    class="delete-btn"
+                    (click)="deleteComment(comment)"
+                  >
+                    Delete
+                  </button>
+
+                </div>
+
+              }
+
+            } @empty {
+              <div class="empty-state">
+                No comments found.
+              </div>
+            }
+
+            @if (selectedPostId && getCommentsForPost(selectedPostId).length === 0 && comments.length > 0) {
+              <div class="empty-state">
+                No comments found for this post on the current page.
+              </div>
+            }
+
+          </div>
+
+
+          <div class="pagination">
+
+            <span>
+              Page {{ commentPage }} of {{ commentTotalPages || 1 }}
+            </span>
+
+            <div class="pagination-actions">
+              <button
+                type="button"
+                (click)="previousCommentPage()"
+                [disabled]="commentPage <= 1"
+              >
+                Previous
+              </button>
+
+              <button
+                type="button"
+                (click)="nextCommentPage()"
+                [disabled]="commentPage >= commentTotalPages"
+              >
+                Next
+              </button>
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="dashboard-footer">
+      <p>© {{ today | date:'yyyy' }} GechBlog. All rights reserved.</p>
+      <span>Admin Control Panel</span>
+    </footer>
+
+  </main>
+
+</div>
