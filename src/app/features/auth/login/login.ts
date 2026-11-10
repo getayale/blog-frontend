@@ -46,8 +46,10 @@ export class Login {
 
         this.message = result.message;
         this.userRole = result.user.role;
+          this.auth.setCurrentUser(result.user);
 
         this.isLoading = false;
+      
 
         if (this.userRole === 'READER') {
           this.router.navigate(['/reader-dashboard']);

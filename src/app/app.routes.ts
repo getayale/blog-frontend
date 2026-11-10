@@ -9,6 +9,7 @@ import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
 import { PostDetails } from './features/posts/post-details/post-details';
 
+import { authGuard } from './guards/auth-guard';
 import { adminGuard } from './guards/admin-guard';
 import { authorGuard } from './guards/author-guard';
 
@@ -17,7 +18,11 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'register', component: Register },
 
-  { path: 'reader-dashboard', component: ReaderDashboard },
+  {
+    path: 'reader-dashboard',
+    component: ReaderDashboard,
+    canActivate: [authGuard]
+  },
 
   {
     path: 'author-dashboard',

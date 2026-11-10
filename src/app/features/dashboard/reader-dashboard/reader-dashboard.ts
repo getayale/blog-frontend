@@ -46,16 +46,21 @@ export class ReaderDashboard {
   searchPosts() {
     this.loadPosts();
   }
-logout(){
-    this.auth.logout().subscribe({
-      next:()=>{
-          this.router.navigate(['/login']);
-      },
-     error:()=>{
-      this.errorMessage='Unable to log out. Please try again.';
+logout(): void {
+  this.auth.logout().subscribe({
+    next: () => {
+      this.auth.clearCurrentUser();
+
+      this.router.navigate(['/login']);
+
       this.cdr.markForCheck();
-     } 
-    });
+    },
+
+    error: () => {
+      this.errorMessage = 'Unable to log out. Please try again.';
+      this.cdr.markForCheck();
+    }
+  });
 }
 
 }

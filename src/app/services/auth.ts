@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type {RegisterRequest,LoginRequest,CurrentUserResponse} from '../models/auth';
+
+import type { User } from '../models/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +10,17 @@ import type {RegisterRequest,LoginRequest,CurrentUserResponse} from '../models/a
 export class Auth {
 
   private apiUrl = 'http://localhost:3000/api/auth';
+
+   currentUser=signal<User | null>(null);
+   isAuthenticated=computed(()=>this.currentUser()!==null);
+
+   setCurrentUser(user:User){
+    this.currentUser.set(user);
+   }
+
+   clearCurrentUser(){
+    this.currentUser.set(null);
+   }
 
   constructor(private http: HttpClient) {}
 
@@ -34,4 +47,20 @@ getCurrentUser() {
     withCredentials: true
   });
 }
+
+initializeAuth(): Promise<void> {
+  return new Promise((resolve) => {
+    this.getCurrentUser().subscribe({
+      next: (response) => {
+        this.currentUser.set(response.user);
+        resolve();
+      },
+      error: () => {
+        this.clearCurrentUser();
+        resolve();
+      }
+    });
+  });
 }
+}
+

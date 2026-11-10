@@ -449,44 +449,44 @@ export class AuthorDashboard {
       block: 'start'
     });
   }
+// =========================================
+// LOGOUT
+// =========================================
 
-  // =========================================
-  // LOGOUT
-  // =========================================
+logout(): void {
+  const confirmed = confirm(
+    'Are you sure you want to logout?'
+  );
 
-  logout(): void {
-    const confirmed = confirm(
-      'Are you sure you want to logout?'
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    this.isLoggingOut = true;
-
-    this.auth.logout().subscribe({
-      next: () => {
-        this.currentUser = null;
-        this.isLoggingOut = false;
-
-        this.router.navigate(['/login']);
-
-        this.cdr.markForCheck();
-      },
-
-      error: (error: HttpErrorResponse) => {
-        this.errorMessage = this.getErrorMessage(
-          error,
-          'Unable to logout. Please try again.'
-        );
-
-        this.isLoggingOut = false;
-        this.cdr.markForCheck();
-      }
-    });
+  if (!confirmed) {
+    return;
   }
 
+  this.isLoggingOut = true;
+
+  this.auth.logout().subscribe({
+    next: () => {
+      this.currentUser = null;
+      this.auth.clearCurrentUser();
+
+      this.isLoggingOut = false;
+
+      this.router.navigate(['/login']);
+
+      this.cdr.markForCheck();
+    },
+
+    error: (error: HttpErrorResponse) => {
+      this.errorMessage = this.getErrorMessage(
+        error,
+        'Unable to logout. Please try again.'
+      );
+
+      this.isLoggingOut = false;
+      this.cdr.markForCheck();
+    }
+  });
+}
   // =========================================
   // ERROR HANDLING
   // =========================================

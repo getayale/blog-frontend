@@ -117,6 +117,7 @@ export class AdminDashboard {
     this.auth.logout().subscribe({
       next: () => {
         this.currentUser = null;
+        this.auth.clearCurrentUser();
         this.router.navigate(['/login']);
       },
       error: (error) => {
