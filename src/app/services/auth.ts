@@ -3,14 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import type {RegisterRequest,LoginRequest,CurrentUserResponse} from '../models/auth';
 
 import type { User } from '../models/auth';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class Auth {
 
-  private apiUrl = 'http://localhost:3000/api/auth';
-
+ private apiUrl = `${environment.apiUrl}/auth`;
+ 
    currentUser=signal<User | null>(null);
    isAuthenticated=computed(()=>this.currentUser()!==null);
 

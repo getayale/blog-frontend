@@ -18,13 +18,14 @@ import type {
   AdminCommentsResponse,
   DeleteCommentResponse
 } from '../models/comments';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Admin {
 
-  private apiUrl = 'http://localhost:3000/api/admin';
+ private apiUrl = `${environment.apiUrl}/admin`;
 
   constructor(private http: HttpClient) {}
 

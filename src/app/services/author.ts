@@ -8,13 +8,14 @@ import {
   CreateAuthorPostRequest,
   UpdateAuthorPostRequest
 } from '../models/author';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Author {
 
-  private apiUrl = 'http://localhost:3000/api/posts';
+  private apiUrl = `${environment.apiUrl}/posts`;
 
   constructor(private http: HttpClient) {}
 
